@@ -19,4 +19,6 @@ app.use('/api/users', require('./src/routes/userRoutes'));
 app.use('/api/auth', require('./src/routes/authRoutes'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
+// Exportar la instancia de la aplicación para los tests
+module.exports = { app, server };
