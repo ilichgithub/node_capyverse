@@ -21,13 +21,14 @@ exports.getPostById = async (req, res) => {
 };
 
 exports.updatePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  if (!post || post.author.toString() !== req.user.id)
-    return res.status(403).json({ error: 'No autorizado' });
-
-  Object.assign(post, req.body);
-  await post.save();
-  res.json(post);
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: 'Post no encontrado' });
+    // Autorización: Asegurarse de que el usuario es el autor del post
+    if (post.author.toString() !== req.user._id.toString()) {
+        return res.status(401).json({ error: 'No autorizado' });
+    }
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedPost);
 };
 
 exports.deletePost = async (req, res) => {
@@ -35,7 +36,7 @@ exports.deletePost = async (req, res) => {
   if (!post) {
       return res.status(404).json({ message: 'Post no encontrado' });
   }
-  if (post.user.toString() !== req.user._id.toString()) {
+  if (post.author.toString() !== req.user._id.toString()) {
       return res.status(401).json({ message: 'No estás autorizado para eliminar este post' });
   }
   await post.deleteOne();
