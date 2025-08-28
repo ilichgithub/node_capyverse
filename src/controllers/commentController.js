@@ -1,7 +1,11 @@
 const Comment = require('../models/commentModel');
+const Post = require('../models/postModel');
 
 exports.createComment = async (req, res) => {
-  try {
+  try {  
+    const post = await Post.findById(req.params.postId).populate('author', 'username');
+    if (!post) return res.status(404).json({ error: 'Post no encontrado' });
+    
     const comment = await Comment.create({
       content: req.body.content,
       author: req.user.id,
@@ -21,9 +25,12 @@ exports.getCommentsByPost = async (req, res) => {
 
 exports.deleteComment = async (req, res) => {
   const comment = await Comment.findById(req.params.id);
-  if (!comment || comment.author.toString() !== req.user.id)
-    return res.status(403).json({ error: 'No autorizado' });
-
-  await comment.remove();
-  res.json({ message: 'Comentario eliminado' });
+  if (!comment) {
+      return res.status(404).json({ message: 'Comentario no encontrado' });
+  }
+  if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: 'No estás autorizado para eliminar este comentario' });
+  }
+  await comment.deleteOne();
+  res.status(200).json({ message: 'Comentario eliminado' });
 };

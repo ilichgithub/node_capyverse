@@ -5,13 +5,6 @@ const postCtrl = require('../controllers/postController');
 
 /**
  * @swagger
- * tags:
- *  name: Posts
- *      description: Rutas para la gestión de publicaciones
- */
-
-/**
- * @swagger
  * /posts:
  *  get:
  *      summary: Obtener todos los posts
