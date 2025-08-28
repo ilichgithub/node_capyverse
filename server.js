@@ -1,11 +1,13 @@
 // server.js
 const express = require('express');
 const dotenv = require('dotenv');
+const swaggerUi = require('swagger-ui-express');
 const connectDB = require('./src/config/db');
 const userRoutes = require('./src/routes/userRouter');
 const authRoutes = require('./src/routes/authRouter');
 const postRoutes = require('./src/routes/postRouter');
 const commentRoutes = require('./src/routes/commentRouter');
+const swaggerSpec = require('./src/config/swagger');
 
 dotenv.config();
 connectDB();
@@ -18,6 +20,7 @@ app.get('/', (req, res) => {
   res.send('API funcionando...');
 });
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Importar y usar las rutas de la API
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
