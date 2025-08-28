@@ -25,7 +25,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/comments', commentRoutes);
+app.use('/api/post', commentRoutes);
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));

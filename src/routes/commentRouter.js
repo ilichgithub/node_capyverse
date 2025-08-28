@@ -5,7 +5,7 @@ const commentCtrl = require('../controllers/commentController');
 
 /**
  * @swagger
- * /comments/{postId}:
+ * /post/{postId}/comments:
  *   get:
  *     summary: Obtener comentarios de un post
  *     tags: [Comments]
@@ -20,11 +20,11 @@ const commentCtrl = require('../controllers/commentController');
  *       200:
  *         description: Lista de comentarios
  */
-router.get('/:postId', commentCtrl.getCommentsByPost);
+router.get('/:postId/comments', commentCtrl.getCommentsByPost);
 
 /**
  * @swagger
- * /comments/{postId}:
+ * /post/{postId}/comment:
  *   post:
  *     summary: Crear un comentario en un post
  *     tags: [Comments]
@@ -49,11 +49,11 @@ router.get('/:postId', commentCtrl.getCommentsByPost);
  *       400:
  *         description: Error de validación
  */
-router.post('/:postId', auth, commentCtrl.createComment);
+router.post('/:postId/comment', auth, commentCtrl.createComment);
 
 /**
  * @swagger
- * /comments/{id}:
+ * /post/{postId}/comment/{id}:
  *   delete:
  *     summary: Eliminar un comentario por ID
  *     tags: [Comments]
@@ -74,6 +74,6 @@ router.post('/:postId', auth, commentCtrl.createComment);
  *       404:
  *         description: Comentario no encontrado
  */
-router.delete('/:id', auth, commentCtrl.deleteComment);
+router.delete('/:postId/comment/:id', auth, commentCtrl.deleteComment);
 
 module.exports = router;

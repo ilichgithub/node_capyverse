@@ -31,10 +31,10 @@ beforeEach(async () => {
 });
 
 // --- Tests para el endpoint de crear comentario ---
-describe('POST /api/posts/:postId/comments', () => {
+describe('POST /api/post/:postId/comment', () => {
     it('Debe crear un comentario exitosamente', async () => {
         const res = await request(app)
-            .post(`/api/comments/${testPost._id}`)
+            .post(`/api/post/${testPost._id}/comment`)
             .set('Authorization', `Bearer ${token}`)
             .send({ content: 'Nuevo comentario de prueba' });
 
@@ -46,7 +46,7 @@ describe('POST /api/posts/:postId/comments', () => {
     it('Debe devolver 404 si el post no existe', async () => {
         const fakeId = new mongoose.Types.ObjectId();
         const res = await request(app)
-            .post(`/api/comments/${fakeId}`)
+            .post(`/api/post/${fakeId}/comment`)
             .set('Authorization', `Bearer ${token}`)
             .send({ content: 'Comentario en post inexistente' });
 
@@ -56,7 +56,7 @@ describe('POST /api/posts/:postId/comments', () => {
 });
 
 // --- Tests para el endpoint de obtener comentarios ---
-describe('GET /api/posts/:postId/comments', () => {
+describe('GET /api/post/:postId/comments', () => {
     it('Debe obtener todos los comentarios de un post', async () => {
 
         testComment = await Comment.create({
@@ -65,7 +65,7 @@ describe('GET /api/posts/:postId/comments', () => {
             post: testPost._id,
         });
 
-        const res = await request(app).get(`/api/comments/${testPost._id}`);
+        const res = await request(app).get(`/api/post/${testPost._id}/comments`);
         expect(res.statusCode).toEqual(200);
         expect(Array.isArray(res.body)).toBeTruthy();
         expect(res.body.length).toBeGreaterThan(0);
@@ -78,14 +78,14 @@ describe('GET /api/posts/:postId/comments', () => {
             content: 'Este post no tiene comentarios.',
             author: testUser._id,
         });
-        const res = await request(app).get(`/api/comments/${anotherPost._id}`);
+        const res = await request(app).get(`/api/post/${anotherPost._id}/comments`);
         expect(res.statusCode).toEqual(200);
         expect(res.body.length).toBe(0);
     });
 });
 
 // --- Tests para el endpoint de eliminar comentario ---
-describe('DELETE /api/comments/:id', () => {
+describe('DELETE /api/post/:postId/comment/:id', () => {
     it('Debe eliminar un comentario exitosamente', async () => {
         const commentToDelete = await Comment.create({
             content: 'Comentario a eliminar',
@@ -94,7 +94,7 @@ describe('DELETE /api/comments/:id', () => {
         });
 
         const res = await request(app)
-            .delete(`/api/comments/${commentToDelete._id}`)
+            .delete(`/api/post/${testPost._id}/comment/${commentToDelete._id}`)
             .set('Authorization', `Bearer ${token}`);
         
         expect(res.statusCode).toEqual(200);
@@ -115,7 +115,7 @@ describe('DELETE /api/comments/:id', () => {
         });
 
         const res = await request(app)
-            .delete(`/api/comments/${commentToDelete._id}`)
+            .delete(`/api/post/${testPost._id}/comment/${commentToDelete._id}`)
             .set('Authorization', `Bearer ${anotherToken}`);
         
         expect(res.statusCode).toEqual(401);
@@ -124,7 +124,7 @@ describe('DELETE /api/comments/:id', () => {
     it('Debe devolver 404 si el comentario no existe', async () => {
         const fakeId = new mongoose.Types.ObjectId();
         const res = await request(app)
-            .delete(`/api/comments/${fakeId}`)
+            .delete(`/api/post/${testPost._id}/comment/${fakeId}`)
             .set('Authorization', `Bearer ${token}`);
         
         expect(res.statusCode).toEqual(404);
